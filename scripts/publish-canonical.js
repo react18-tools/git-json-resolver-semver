@@ -1,7 +1,7 @@
 const { execSync } = require("child_process");
 
 // Publish canonical packages
-[].forEach(pkg => {
+["json-merge-semver", "git-semver-resolver", "semver-merge-driver", "semver-conflict-resolver"].forEach(pkg => {
   try {
     execSync(
       `sed -i -e "s/name.*/name\\": \\"${pkg.replace(/\//g, "\\\\/")}\\",/" lib/package.json`,
