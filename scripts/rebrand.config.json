@@ -2,5 +2,14 @@
   "packageName": "git-json-resolver-semver",
   "owner": "react18-tools",
   "repo": "git-json-resolver-semver",
-  "title": "Git Json Resolver Semver"
+  "title": "Git Json Resolver Semver",
+  "removedPackages": [
+    "examples/express",
+    "packages/logger"
+  ],
+  "removedFeatures": [
+    "Rebrander",
+    "Generators",
+    "LiteMode"
+  ]
 }

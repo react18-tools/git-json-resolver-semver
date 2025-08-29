@@ -3,7 +3,7 @@ module.exports = {
   tsconfig: "tsconfig.docs.json",
   name: "Git Json Resolver Semver",
   entryPoints: ["./lib/src"],
-  exclude: ["**/*.test.tsx", "**/index.ts", "**/declaration.d.ts"],
+  exclude: ["**/*.test.tsx", "**/declaration.d.ts"],
   entryPointStrategy: "Expand",
   out: "./docs",
   commentStyle: "all",

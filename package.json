@@ -12,8 +12,7 @@
     "sync": "turborepo-template-upgrade",
     "test": "turbo test",
     "typecheck": "turbo typecheck",
-    "preinstall": "node scripts/update-pm.js",
-    "rebrand": "node scripts/rebrand.js"
+    "preinstall": "node scripts/update-pm.js"
   },
   "pre-commit": [
     "lint:fix",
@@ -23,8 +22,6 @@
     "@changesets/cli": "^2.29.6",
     "@repo/typescript-config": "workspace:*",
     "@types/node": "^24.3.0",
-    "enquirer": "^2.4.1",
-    "plop": "^4.0.1",
     "pre-commit": "^1.2.2",
     "prettier": "^3.6.2",
     "turbo": "^2.5.6",
