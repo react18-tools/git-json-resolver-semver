@@ -1,4 +1,4 @@
-# Git Json Resolver Semver <img src="https://raw.githubusercontent.com/mayank1513/mayank1513/main/popper.png" style="height: 40px"/>
+# git-json-resolver-semver <img src="https://raw.githubusercontent.com/mayank1513/mayank1513/main/popper.png" style="height: 40px"/>
 
 [![test](https://github.com/react18-tools/git-json-resolver-semver/actions/workflows/test.yml/badge.svg)](https://github.com/react18-tools/git-json-resolver-semver/actions/workflows/test.yml)
 [![Maintainability](https://qlty.sh/gh/react18-tools/projects/git-json-resolver-semver/maintainability.svg)](https://qlty.sh/gh/react18-tools/projects/git-json-resolver-semver)
@@ -7,25 +7,27 @@
 [![Downloads](https://img.jsdelivr.com/img.shields.io/npm/d18m/git-json-resolver-semver.svg)](https://www.npmjs.com/package/git-json-resolver-semver)
 ![npm bundle size](https://img.shields.io/bundlephobia/minzip/git-json-resolver-semver)
 
-Git Json Resolver Semver is a comprehensive library designed to unlock the full potential of React 18 server components. It provides customizable loading animation components and a fullscreen loader container, seamlessly integrating with React and Next.js.
+**Semver-aware plugin for [`git-json-resolver`](https://github.com/react18-tools/git-json-resolver)** — resolve JSON version conflicts (e.g., `package.json`) via semantic-version strategies.
 
-✅ Fully Treeshakable (import from `git-json-resolver-semver/client/loader-container`)
+**Strategies (this release):**
 
-✅ Fully TypeScript Supported
+- `semver-max` → pick the higher version
+- `semver-min` → pick the lower version
+- `semver-ours` → prefer ours if valid, else (optionally) prefer valid theirs
+- `semver-theirs` → prefer theirs if valid, else (optionally) prefer valid ours
 
-✅ Leverages the power of React 18 Server components
+---
 
-✅ Compatible with all React 18 build systems/tools/frameworks
+## ✨ Features
 
-✅ Documented with [Typedoc](https://react18-tools.github.io/git-json-resolver-semver) ([Docs](https://react18-tools.github.io/git-json-resolver-semver))
+- Avoid manual conflict resolution in `package.json`
+- Small & tree-shakable (0 runtime dependencies)
+- Works with **direct import** or **dynamic plugin loading**
+- TypeScript types included
 
-✅ Examples for Next.js, and Vite
+> <img src="https://raw.githubusercontent.com/mayank1513/mayank1513/main/popper.png" style="height: 20px"/> Star the repo if it saved your merge. And and also share it with your friends.
 
-> <img src="https://raw.githubusercontent.com/mayank1513/mayank1513/main/popper.png" style="height: 20px"/> Star [this repository](https://github.com/react18-tools/git-json-resolver-semver) and share it with your friends.
-
-## Getting Started
-
-### Installation
+## 📦 Install
 
 ```bash
 pnpm add git-json-resolver-semver
@@ -43,86 +45,83 @@ npm install git-json-resolver-semver
 yarn add git-json-resolver-semver
 ```
 
-## Want Lite Version? [![npm bundle size](https://img.shields.io/bundlephobia/minzip/git-json-resolver-semver-lite)](https://www.npmjs.com/package/git-json-resolver-semver-lite) [![Version](https://img.shields.io/npm/v/git-json-resolver-semver-lite.svg?colorB=green)](https://www.npmjs.com/package/git-json-resolver-semver-lite) [![Downloads](https://img.jsdelivr.com/img.shields.io/npm/d18m/git-json-resolver-semver-lite.svg)](https://www.npmjs.com/package/git-json-resolver-semver-lite)
+Peer dependencies:
 
 ```bash
-pnpm add git-json-resolver-semver-lite
+pnpm install git-json-resolver
 ```
 
-**or**
+---
 
-```bash
-npm install git-json-resolver-semver-lite
+## 🚀 Usage
+
+### 1. Direct Import
+
+```ts
+import { semverMax } from "git-json-resolver-semver";
+import { resolveConflicts } from "git-json-resolver";
+
+await resolveConflicts({
+  customStrategies: {
+    "semver-max": semverMax,
+  },
+  rules: {
+    "dependencies.react": ["semver-max"],
+    "devDependencies.vitest": ["semver-min"],
+  },
+});
 ```
 
-**or**
+### 2. Dynamic Loading
 
-```bash
-yarn add git-json-resolver-semver-lite
-```
-
-> You need `r18gs` as a peer-dependency
-
-### Import Styles
-
-You can import styles globally or within specific components.
-
-```css
-/* globals.css */
-@import "git-json-resolver-semver/dist";
-```
-
-```tsx
-// layout.tsx
-import "git-json-resolver-semver/dist/index.css";
-```
-
-For selective imports:
-
-```css
-/* globals.css */
-@import "git-json-resolver-semver/dist/client"; /** required if you are using LoaderContainer */
-@import "git-json-resolver-semver/dist/server/bars/bars1";
-```
-
-### Usage
-
-Using loaders is straightforward.
-
-```tsx
-import { Bars1 } from "git-json-resolver-semver/dist/server/bars/bars1";
-
-export default function MyComponent() {
-  return someCondition ? <Bars1 /> : <>Something else...</>;
+```json
+{
+  "plugins": ["git-json-resolver-semver"],
+  "rules": {
+    "dependencies.react": ["semver-max"],
+    "devDependencies.vitest": ["semver-min"]
+  }
 }
 ```
 
-For detailed API and options, refer to [the API documentation](https://react18-tools.github.io/git-json-resolver-semver).
+**_or_** TypeScript Config
 
-**Using LoaderContainer**
+```ts
+// git-json-resolver.config.ts
+import type { Config } from "git-json-resolver";
 
-`LoaderContainer` is a fullscreen component. You can add this component directly in your layout and then use `useLoader` hook to toggle its visibility.
+const config: Config = {
+  plugins: ["git-json-resolver-semver"],
+  rules: {
+    "dependencies.react": ["semver-max"],
+    "devDependencies.vitest": ["semver-min"],
+  },
+};
 
-```tsx
-// layout.tsx
-<LoaderContainer />
-	 ...
+export default config;
 ```
 
-```tsx
-// some other page or component
-import { useLoader } from "git-json-resolver-semver/dist/hooks";
+---
 
-export default MyComponent() {
-	const { setLoading } = useLoader();
-	useCallback(()=>{
-		setLoading(true);
-		...do some work
-		setLoading(false);
-	}, [])
-	...
-}
-```
+## ⚙️ Behavior notes
+
+- **strict** mode (default) accepts only `x.y.z`. Set non-strict to allow prereleases/ranges.
+- **preferValid** (default) returns the valid side when the other is invalid.
+- **fallback** controls behavior when neither side is valid (`ours` | `theirs` | `continue` | `error`).
+
+## ⚙️ Strategies
+
+| Strategy        | Behavior                                                              | Example (`ours` vs `theirs`) | Result  |
+| --------------- | --------------------------------------------------------------------- | ---------------------------- | ------- |
+| `semver-max`    | Picks the higher valid semver                                         | `1.2.3` vs `1.3.0`           | `1.3.0` |
+| `semver-min`    | Picks the lower valid semver                                          | `2.0.0` vs `2.1.0`           | `2.0.0` |
+| `semver-ours`   | Picks `ours` if valid semver, else apply `preferValid` / `fallback`   | `1.2.3` vs `banana`          | `1.2.3` |
+| `semver-theirs` | Picks `theirs` if valid semver, else apply `preferValid` / `fallback` | `foo` vs `2.0.0`             | `2.0.0` |
+
+## 🙏 Acknowledgments
+
+- [`git-json-resolver`](https://github.com/...) for the plugin system
+- [`compare-versions`](https://github.com/omichelsen/compare-versions) for lightweight semver checks
 
 ## License
 
@@ -133,3 +132,4 @@ This library is licensed under the MPL-2.0 open-source license.
 <hr />
 
 <p align="center" style="text-align:center">with 💖 by <a href="https://mayank-chaudhari.vercel.app" target="_blank">Mayank Kumar Chaudhari</a></p>
+```
