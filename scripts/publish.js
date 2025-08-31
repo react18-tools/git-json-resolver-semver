@@ -79,4 +79,3 @@ try {
 } catch {
   console.error("Failed to publish canonical packages");
 }
-

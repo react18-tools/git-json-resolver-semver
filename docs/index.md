@@ -1,3 +1,9 @@
+---
+layout: default
+title: Home
+nav_order: 1
+---
+
 # Git Json Resolver Semver <img src="https://raw.githubusercontent.com/mayank1513/mayank1513/main/popper.png" style="height: 40px"/>
 
 [![test](https://github.com/react18-tools/git-json-resolver-semver/actions/workflows/test.yml/badge.svg)](https://github.com/react18-tools/git-json-resolver-semver/actions/workflows/test.yml)
@@ -133,3 +139,8 @@ This library is licensed under the MPL-2.0 open-source license.
 <hr />
 
 <p align="center" style="text-align:center">with 💖 by <a href="https://mayank-chaudhari.vercel.app" target="_blank">Mayank Kumar Chaudhari</a></p>
+
+## Modules
+
+- [index](index.md)
+- [index.test](index.test.md)
