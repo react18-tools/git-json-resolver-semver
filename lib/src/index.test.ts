@@ -5,14 +5,12 @@ import { StrategyStatus } from "git-json-resolver";
 const run = (fn: any, ours: any, theirs: any) => fn({ ours, theirs, base: undefined, path: [] });
 
 const reset = (overrides: any = {}) => {
-  // @ts-ignore -- ts gone mad
-  plugin.init({
+  plugin.init?.({
     strict: true,
     normalize: true,
     fallback: "continue",
     preferValid: true,
     preferRange: false,
-    workspacePattern: "",
     ...overrides,
   });
 };
