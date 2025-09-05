@@ -1,5 +1,10 @@
-import { StrategyFn, StrategyPlugin, StrategyStatus } from "git-json-resolver";
+import { StrategyFn, StrategyPlugin } from "git-json-resolver";
 import { compareVersions, validate } from "compare-versions";
+import {
+  StrategyStatus_OK,
+  StrategyStatus_CONTINUE,
+  StrategyStatus_FAIL,
+} from "git-json-resolver/utils";
 
 /**
  * Semver-aware strategies for `git-json-resolver`.
@@ -28,6 +33,14 @@ declare module "git-json-resolver" {
     "semver-min": string;
     "semver-ours": string;
     "semver-theirs": string;
+  }
+
+  interface PluginConfig {
+    "git-json-resolver-semver": SemverPluginConfig;
+    "json-merge-semver": SemverPluginConfig;
+    "git-semver-resolver": SemverPluginConfig;
+    "semver-merge-driver": SemverPluginConfig;
+    "semver-conflict-resolver": SemverPluginConfig;
   }
 }
 
@@ -65,11 +78,11 @@ const isValidSemver = (val: unknown): val is string => {
 export const semverMax: StrategyFn = ({ ours, theirs }) => {
   if (isValidSemver(ours) && isValidSemver(theirs)) {
     const winner = compareVersions(ours, theirs) >= 0 ? ours : theirs;
-    return { status: StrategyStatus.OK, value: winner };
+    return { status: StrategyStatus_OK, value: winner };
   }
   if (pluginConfig.preferValid) {
-    if (isValidSemver(ours)) return { status: StrategyStatus.OK, value: ours };
-    if (isValidSemver(theirs)) return { status: StrategyStatus.OK, value: theirs };
+    if (isValidSemver(ours)) return { status: StrategyStatus_OK, value: ours };
+    if (isValidSemver(theirs)) return { status: StrategyStatus_OK, value: theirs };
   }
   return handleFallback({ ours, theirs });
 };
@@ -80,11 +93,11 @@ export const semverMax: StrategyFn = ({ ours, theirs }) => {
 export const semverMin: StrategyFn = ({ ours, theirs }) => {
   if (isValidSemver(ours) && isValidSemver(theirs)) {
     const winner = compareVersions(ours, theirs) <= 0 ? ours : theirs;
-    return { status: StrategyStatus.OK, value: winner };
+    return { status: StrategyStatus_OK, value: winner };
   }
   if (pluginConfig.preferValid) {
-    if (isValidSemver(ours)) return { status: StrategyStatus.OK, value: ours };
-    if (isValidSemver(theirs)) return { status: StrategyStatus.OK, value: theirs };
+    if (isValidSemver(ours)) return { status: StrategyStatus_OK, value: ours };
+    if (isValidSemver(theirs)) return { status: StrategyStatus_OK, value: theirs };
   }
   return handleFallback({ ours, theirs });
 };
@@ -93,9 +106,9 @@ export const semverMin: StrategyFn = ({ ours, theirs }) => {
  * Always prefer ours if valid semver, else apply preferValid/fallback rules.
  */
 export const semverOurs: StrategyFn = ({ ours, theirs }) => {
-  if (isValidSemver(ours)) return { status: StrategyStatus.OK, value: ours };
+  if (isValidSemver(ours)) return { status: StrategyStatus_OK, value: ours };
   if (pluginConfig.preferValid && isValidSemver(theirs)) {
-    return { status: StrategyStatus.OK, value: theirs };
+    return { status: StrategyStatus_OK, value: theirs };
   }
   return handleFallback({ ours, theirs });
 };
@@ -104,9 +117,9 @@ export const semverOurs: StrategyFn = ({ ours, theirs }) => {
  * Always prefer theirs if valid semver, else apply preferValid/fallback rules.
  */
 export const semverTheirs: StrategyFn = ({ ours, theirs }) => {
-  if (isValidSemver(theirs)) return { status: StrategyStatus.OK, value: theirs };
+  if (isValidSemver(theirs)) return { status: StrategyStatus_OK, value: theirs };
   if (pluginConfig.preferValid && isValidSemver(ours)) {
-    return { status: StrategyStatus.OK, value: ours };
+    return { status: StrategyStatus_OK, value: ours };
   }
   return handleFallback({ ours, theirs });
 };
@@ -123,14 +136,14 @@ const handleFallback = ({
 }): ReturnType<StrategyFn> => {
   switch (pluginConfig.fallback) {
     case "ours":
-      return { status: StrategyStatus.OK, value: ours };
+      return { status: StrategyStatus_OK, value: ours };
     case "theirs":
-      return { status: StrategyStatus.OK, value: theirs };
+      return { status: StrategyStatus_OK, value: theirs };
     case "error":
-      return { status: StrategyStatus.FAIL, reason: "No valid semver found" };
+      return { status: StrategyStatus_FAIL, reason: "No valid semver found" };
     case "continue":
     default:
-      return { status: StrategyStatus.CONTINUE };
+      return { status: StrategyStatus_CONTINUE };
   }
 };
 
