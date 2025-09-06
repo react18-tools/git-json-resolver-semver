@@ -29,6 +29,7 @@ If you're using dynamic plugin loading, **no changes are needed**:
 #### 2. Direct Import Usage
 
 **Before (v0.0.2):**
+
 ```ts
 import plugin, { semverMax } from "git-json-resolver-semver";
 import { resolveConflicts } from "git-json-resolver";
@@ -36,7 +37,7 @@ import { resolveConflicts } from "git-json-resolver";
 // Plugin configuration (old way)
 await plugin.init?.({
   strict: false,
-  fallback: "ours"
+  fallback: "ours",
 });
 
 await resolveConflicts({
@@ -50,6 +51,7 @@ await resolveConflicts({
 ```
 
 **After (v1.0.0):**
+
 ```ts
 import createSemverPlugin, { semverMax, init } from "git-json-resolver-semver";
 import { resolveConflicts } from "git-json-resolver";
@@ -57,7 +59,7 @@ import { resolveConflicts } from "git-json-resolver";
 // Option 1: Use factory function with config
 const plugin = createSemverPlugin({
   strict: false,
-  fallback: "ours"
+  fallback: "ours",
 });
 
 await resolveConflicts({
@@ -70,7 +72,7 @@ await resolveConflicts({
 // Option 2: Use global init (for backward compatibility)
 init({
   strict: false,
-  fallback: "ours"
+  fallback: "ours",
 });
 
 await resolveConflicts({
@@ -91,8 +93,8 @@ The plugin now uses `validateStrict` from compare-versions and properly handles 
 
 ```ts
 // Now properly handles these cases:
-"^1.2.3" // Strips ^ prefix before validation
-"1.2.3-beta.1" // Handled based on strict mode setting
+"^1.2.3"; // Strips ^ prefix before validation
+"1.2.3-beta.1"; // Handled based on strict mode setting
 ```
 
 #### Factory Pattern Benefits
@@ -116,10 +118,13 @@ All configuration options remain the same:
 ### Troubleshooting
 
 **Error: "Cannot read property 'strategies' of undefined"**
+
 - You're likely importing the old way. Use `createSemverPlugin()` or individual strategy exports.
 
 **Error: "plugin.init is not a function"**
+
 - Use the new `init` named export instead of `plugin.init`.
 
 **Semver validation behaving differently**
+
 - The new validation is more accurate. Check if your versions need the `strict: false` option.

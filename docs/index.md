@@ -64,9 +64,24 @@ pnpm install git-json-resolver
 ### 1. Direct Import
 
 ```ts
-import { semverMax } from "git-json-resolver-semver";
+import createSemverPlugin, { semverMax } from "git-json-resolver-semver";
 import { resolveConflicts } from "git-json-resolver";
 
+// Option 1: Use factory function with custom config
+const plugin = createSemverPlugin({
+  strict: false,
+  fallback: "ours",
+});
+
+await resolveConflicts({
+  customStrategies: plugin.strategies,
+  rules: {
+    "dependencies.react": ["semver-max"],
+    "devDependencies.vitest": ["semver-min"],
+  },
+});
+
+// Option 2: Use individual strategy exports - not scoped @see migration guide for more details
 await resolveConflicts({
   customStrategies: {
     "semver-max": semverMax,
@@ -109,11 +124,39 @@ export default config;
 
 ---
 
-## ⚙️ Behavior notes
+## ⚙️ Configuration
 
-- **strict** mode (default) accepts only `x.y.z`. Set non-strict to allow prereleases/ranges.
-- **preferValid** (default) returns the valid side when the other is invalid.
-- **fallback** controls behavior when neither side is valid (`ours` | `theirs` | `continue` | `error`).
+### Factory Pattern (Recommended)
+
+```ts
+import createSemverPlugin from "git-json-resolver-semver";
+
+const plugin = createSemverPlugin({
+  strict: true, // Use validateStrict for exact semver only
+  preferValid: true, // Prefer valid semver when only one side is valid
+  fallback: "continue", // Behavior when both sides invalid
+  preferRange: false, // Future: merge into semver ranges
+  workspacePattern: "", // Pattern for workspace rules
+});
+```
+
+### Global Configuration
+
+```ts
+import { init } from "git-json-resolver-semver";
+
+init({
+  strict: false, // Allow prereleases and ranges
+  fallback: "ours",
+});
+```
+
+### Behavior Notes
+
+- **strict** mode uses `validateStrict` - only accepts `x.y.z` format
+- **preferValid** returns the valid side when the other is invalid
+- **fallback** controls behavior when neither side is valid
+- Version prefixes like `^1.2.3` are automatically handled
 
 ## ⚙️ Strategies
 
@@ -142,5 +185,5 @@ This library is licensed under the MPL-2.0 open-source license.
 
 ## Modules
 
-- [index](index.md)
+- [index](index/README.md)
 - [index.test](index.test.md)
