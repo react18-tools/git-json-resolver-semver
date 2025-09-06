@@ -75,14 +75,14 @@ const isValidSemver = (val: unknown): val is string => {
 /**
  * Pick the higher semver version.
  */
-export const semverMax: StrategyFn = ({ ours, theirs }) => {
+export const semverMax: StrategyFn = ({ ours, theirs, logger, filePath, ...others }) => {
+  logger.debug(
+    filePath ?? "semverMax",
+    JSON.stringify({ ours, theirs, filePath, ...others }, null, 2),
+  );
   if (isValidSemver(ours) && isValidSemver(theirs)) {
     const winner = compareVersions(ours, theirs) >= 0 ? ours : theirs;
     return { status: StrategyStatus_OK, value: winner };
-  }
-  if (pluginConfig.preferValid) {
-    if (isValidSemver(ours)) return { status: StrategyStatus_OK, value: ours };
-    if (isValidSemver(theirs)) return { status: StrategyStatus_OK, value: theirs };
   }
   return handleFallback({ ours, theirs });
 };
@@ -95,10 +95,6 @@ export const semverMin: StrategyFn = ({ ours, theirs }) => {
     const winner = compareVersions(ours, theirs) <= 0 ? ours : theirs;
     return { status: StrategyStatus_OK, value: winner };
   }
-  if (pluginConfig.preferValid) {
-    if (isValidSemver(ours)) return { status: StrategyStatus_OK, value: ours };
-    if (isValidSemver(theirs)) return { status: StrategyStatus_OK, value: theirs };
-  }
   return handleFallback({ ours, theirs });
 };
 
@@ -107,9 +103,6 @@ export const semverMin: StrategyFn = ({ ours, theirs }) => {
  */
 export const semverOurs: StrategyFn = ({ ours, theirs }) => {
   if (isValidSemver(ours)) return { status: StrategyStatus_OK, value: ours };
-  if (pluginConfig.preferValid && isValidSemver(theirs)) {
-    return { status: StrategyStatus_OK, value: theirs };
-  }
   return handleFallback({ ours, theirs });
 };
 
@@ -118,9 +111,6 @@ export const semverOurs: StrategyFn = ({ ours, theirs }) => {
  */
 export const semverTheirs: StrategyFn = ({ ours, theirs }) => {
   if (isValidSemver(theirs)) return { status: StrategyStatus_OK, value: theirs };
-  if (pluginConfig.preferValid && isValidSemver(ours)) {
-    return { status: StrategyStatus_OK, value: ours };
-  }
   return handleFallback({ ours, theirs });
 };
 
@@ -134,6 +124,10 @@ const handleFallback = ({
   ours: unknown;
   theirs: unknown;
 }): ReturnType<StrategyFn> => {
+  if (pluginConfig.preferValid) {
+    if (isValidSemver(ours)) return { status: StrategyStatus_OK, value: ours };
+    if (isValidSemver(theirs)) return { status: StrategyStatus_OK, value: theirs };
+  }
   switch (pluginConfig.fallback) {
     case "ours":
       return { status: StrategyStatus_OK, value: ours };

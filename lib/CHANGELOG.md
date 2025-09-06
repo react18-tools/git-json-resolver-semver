@@ -1,5 +1,11 @@
 # git-json-resolver-semver
 
+## 0.0.2
+
+### Patch Changes
+
+- 6d78136: Add logs
+
 ## 0.0.1
 
 ### Patch Changes
