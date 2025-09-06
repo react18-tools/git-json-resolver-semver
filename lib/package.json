@@ -2,7 +2,7 @@
   "name": "git-json-resolver-semver",
   "author": "Mayank Kumar Chaudhari (https://mayank-chaudhari.vercel.app)",
   "private": false,
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "Plugin for git-json-resolver that applies semver-based merge strategies (max, min, secure, override) to resolve version conflicts in package.json and similar files.",
   "license": "MPL-2.0",
   "main": "./dist/index.js",

@@ -1,5 +1,17 @@
 # git-json-resolver-semver
 
+## 1.0.0
+
+### Major Changes
+
+- **BREAKING CHANGE**: Refactor plugin architecture to factory pattern
+  - **Changed**: Default export is now `createSemverPlugin()` factory function instead of plugin object
+  - **Improved**: Semver validation now uses `validateStrict` and handles version prefixes (e.g., `^1.2.3`)
+  - **Added**: Better TypeScript support with immutable configuration
+  - **Fixed**: Configuration is now properly scoped per plugin instance
+
+  **Migration required**: See MIGRATION.md for upgrade instructions.
+
 ## 0.0.2
 
 ### Patch Changes

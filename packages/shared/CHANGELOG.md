@@ -1,5 +1,12 @@
 # @repo/shared
 
+## 0.0.3
+
+### Patch Changes
+
+- Updated dependencies
+  - git-json-resolver-semver@1.0.0
+
 ## 0.0.2
 
 ### Patch Changes

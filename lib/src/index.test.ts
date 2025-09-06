@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import plugin, { semverMax, semverMin, semverOurs, semverTheirs } from "./index";
+import { init, semverMax, semverMin, semverOurs, semverTheirs } from "./index";
 import {
   StrategyStatus_OK,
   StrategyStatus_CONTINUE,
@@ -19,7 +19,7 @@ const run = (fn: any, ours: any, theirs: any) =>
   fn({ ours, theirs, base: undefined, path: [], logger: mockLogger });
 
 const reset = (overrides: any = {}) => {
-  plugin.init?.({
+  init?.({
     strict: true,
     normalize: true,
     fallback: "continue",

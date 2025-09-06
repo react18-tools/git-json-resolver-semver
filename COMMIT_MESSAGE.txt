@@ -1,0 +1,12 @@
+feat!: refactor plugin architecture to factory pattern
+
+BREAKING CHANGE: Default export is now createSemverPlugin() factory function
+
+- Refactor: Changed from single plugin object to factory function pattern
+- Improve: Enhanced semver validation with validateStrict support  
+- Fix: Better handling of version prefixes (e.g., ^1.2.3)
+- Add: Immutable configuration scoped per plugin instance
+- Update: Improved TypeScript support and type safety
+
+Migration: Use createSemverPlugin() or individual strategy exports.
+See MIGRATION.md for detailed upgrade instructions.
