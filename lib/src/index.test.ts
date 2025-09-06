@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import plugin, { semverMax, semverMin, semverOurs, semverTheirs } from "./index";
 import {
   StrategyStatus_OK,
@@ -6,7 +6,17 @@ import {
   StrategyStatus_FAIL,
 } from "git-json-resolver/utils";
 
-const run = (fn: any, ours: any, theirs: any) => fn({ ours, theirs, base: undefined, path: [] });
+// Mock logger
+const mockLogger = {
+  debug: vi.fn(),
+  info: vi.fn(),
+  warn: vi.fn(),
+  error: vi.fn(),
+  flush: vi.fn(),
+};
+
+const run = (fn: any, ours: any, theirs: any) =>
+  fn({ ours, theirs, base: undefined, path: [], logger: mockLogger });
 
 const reset = (overrides: any = {}) => {
   plugin.init?.({
