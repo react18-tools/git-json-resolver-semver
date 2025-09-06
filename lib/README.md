@@ -64,7 +64,7 @@ import { resolveConflicts } from "git-json-resolver";
 // Option 1: Use factory function with custom config
 const plugin = createSemverPlugin({
   strict: false,
-  fallback: "ours"
+  fallback: "ours",
 });
 
 await resolveConflicts({
@@ -75,7 +75,7 @@ await resolveConflicts({
   },
 });
 
-// Option 2: Use individual strategy exports
+// Option 2: Use individual strategy exports - not scoped @see migration guide for more details
 await resolveConflicts({
   customStrategies: {
     "semver-max": semverMax,
@@ -126,11 +126,11 @@ export default config;
 import createSemverPlugin from "git-json-resolver-semver";
 
 const plugin = createSemverPlugin({
-  strict: true,           // Use validateStrict for exact semver only
-  preferValid: true,      // Prefer valid semver when only one side is valid
-  fallback: "continue",   // Behavior when both sides invalid
-  preferRange: false,     // Future: merge into semver ranges
-  workspacePattern: ""    // Pattern for workspace rules
+  strict: true, // Use validateStrict for exact semver only
+  preferValid: true, // Prefer valid semver when only one side is valid
+  fallback: "continue", // Behavior when both sides invalid
+  preferRange: false, // Future: merge into semver ranges
+  workspacePattern: "", // Pattern for workspace rules
 });
 ```
 
@@ -140,8 +140,8 @@ const plugin = createSemverPlugin({
 import { init } from "git-json-resolver-semver";
 
 init({
-  strict: false,  // Allow prereleases and ranges
-  fallback: "ours"
+  strict: false, // Allow prereleases and ranges
+  fallback: "ours",
 });
 ```
 
